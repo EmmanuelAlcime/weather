@@ -31,3 +31,36 @@
 #button-addon2:hover {
   color: #0d6efd;
 }
+
+.not-found-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 15px;
+}
+
+.not-found-image {
+  width: 150px;
+  height: 150px;
+}
+
+.not-found-card {
+  border: none;
+  background-color: #ffffff;
+  border-radius: 15px;
+}
+
+.display-4 {
+  font-size: 2.5rem;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+.fs-5 {
+  font-size: 1.25rem;
+}
+
+.text-secondary {
+  color: #6c757d !important;
+}
