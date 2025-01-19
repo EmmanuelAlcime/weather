@@ -1,10 +1,17 @@
 import { useState } from 'react'
 
-const Search = ({ onSearch }) => {
+const Search = ({ onSearch, onLocation }) => {
   const [searchValue, setSearchValue] = useState('')
 
   const handleSearch = () => {
     onSearch(searchValue)
+  }
+
+  const handleLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords
+      onLocation(latitude, longitude)
+    })
   }
 
   const styles = {
@@ -39,15 +46,25 @@ const Search = ({ onSearch }) => {
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)} // Corrected onChange handler
         />
-        <button
-          className="btn btn-outline-secondary"
-          type="button"
-          id="button-addon2"
-          style={styles.searchIcon}
-          onClick={handleSearch}
-        >
-          <i className="bi bi-search"></i>
-        </button>
+        <div className="d-flex gap-2">
+          <button
+            className="btn btn-outline-secondary"
+            type="button"
+            id="button-addon2"
+            style={styles.searchIcon}
+            onClick={handleSearch}
+          >
+            <i className="bi bi-search"></i>
+          </button>
+          <button
+            id="button-addon3"
+            className="btn btn-outline-secondary"
+            type="button"
+            onClick={handleLocation}
+          >
+            <i className="bi bi-crosshair2"></i>
+          </button>
+        </div>
       </div>
     </div>
   )

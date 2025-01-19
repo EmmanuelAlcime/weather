@@ -13,16 +13,25 @@ const Home = () => {
   const handleSearch = async (searchValue) => {
     setLoading(true)
     const request = new Request(Keys())
-    const location = await request.getGeolocation(searchValue)
+    const location = await request.getWeatherByCity(searchValue)
     setWeather(location)
     setLoading(false)
+  }
+
+  const handleLocation = async (latitude, longitude) => {
+    setLoading(true)
+    const request = new Request(Keys())
+    const location = await request.getWeatherByCoordinates(latitude, longitude)
+    setWeather(location)
+    setLoading(false)
+    console.log(latitude, longitude)
   }
 
   useEffect(() => {
     const fetchDefaultWeather = async () => {
       setLoading(true)
       const request = new Request(Keys())
-      const defaultLocation = await request.getGeolocation('Bahamas') // Example default city
+      const defaultLocation = await request.getWeatherByCity('Bahamas') // Example default city
       console.log(defaultLocation)
       setWeather(defaultLocation)
       setLoading(false)
@@ -37,7 +46,7 @@ const Home = () => {
         <h2 className="fw-bolder">Weather App</h2>
         <p>Search for a city to get the weather</p>
       </div>
-      <Search onSearch={handleSearch} />
+      <Search onSearch={handleSearch} onLocation={handleLocation} />
       {loading ? (
         <Loading />
       ) : weather && weather.cod === 200 ? ( // Ensure weather is not null before accessing properties

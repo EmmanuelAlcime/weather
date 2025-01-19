@@ -3,15 +3,15 @@ class Request {
     this.apiKey = apiKey
   }
 
-  async getWeather(city) {
+  async getWeatherByCoordinates(latitude, longitude) {
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${this.apiKey}&units=metric`,
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${this.apiKey}&units=metric`,
     )
     const data = await response.json()
     return data
   }
 
-  async getGeolocation(city) {
+  async getWeatherByCity(city) {
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${this.apiKey}`,
     )
