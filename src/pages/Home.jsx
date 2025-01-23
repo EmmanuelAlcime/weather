@@ -61,7 +61,7 @@ const Home = () => {
         <h2 className="fw-bolder">Weather App</h2>
         <p>Search for a city to get the weather</p>
       </div>
-      <div className="d-flex justify-content-center align-items-center gap-2">
+      <div className="d-flex flex-column flex-md-row flex-lg-row justify-content-center align-items-center gap-2">
         <Search
           onSearch={handleSearch}
           onLocation={handleLocation}
