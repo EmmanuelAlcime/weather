@@ -36,6 +36,11 @@ const Home = () => {
         longitude,
         metrics,
       )
+
+      if (location && location.name) {
+        setSearchTerm(location.name) // Update input with location name
+      }
+
       setWeather(location)
     } catch (error) {
       console.error('Error fetching weather by coordinates:', error)
@@ -60,8 +65,8 @@ const Home = () => {
         <Search
           onSearch={handleSearch}
           onLocation={handleLocation}
-          onInputChange={setSearchTerm}
           searchTerm={searchTerm}
+          setSearchValue={setSearchTerm}
         />
         <Dropdown
           options={['Metric', 'Imperial']}

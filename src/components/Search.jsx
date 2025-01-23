@@ -1,19 +1,15 @@
 import { useState } from 'react'
 
-const Search = ({ onSearch, onLocation }) => {
-  const [searchValue, setSearchValue] = useState('')
-
+const Search = ({ onSearch, onLocation, setSearchValue, searchTerm }) => {
   const handleSearch = () => {
-    if (searchValue.trim()) {
-      onSearch(searchValue)
+    if (searchTerm.trim()) {
+      onSearch(searchTerm)
     }
   }
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && searchValue.trim()) {
-      if (searchValue.trim()) {
-        onSearch(searchValue)
-      }
+    if (e.key === 'Enter' && searchTerm.trim()) {
+      onSearch(searchTerm)
     }
   }
 
@@ -24,9 +20,9 @@ const Search = ({ onSearch, onLocation }) => {
     }
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const { latitude, longitude } = position.coords
-        onLocation(latitude, longitude)
+        await onLocation(latitude, longitude)
       },
       (error) => {
         alert('Error fetching location. Please enable location access.')
@@ -61,8 +57,8 @@ const Search = ({ onSearch, onLocation }) => {
           placeholder="Enter a city name"
           aria-label="Enter a city name"
           aria-describedby="button-addon2"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          value={searchTerm}
+          onChange={(e) => setSearchValue(e.target.value)} // Updating state via props
           onKeyDown={handleKeyPress}
         />
         <div className="d-flex gap-2">
