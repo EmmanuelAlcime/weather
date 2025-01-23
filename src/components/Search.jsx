@@ -4,25 +4,43 @@ const Search = ({ onSearch, onLocation }) => {
   const [searchValue, setSearchValue] = useState('')
 
   const handleSearch = () => {
-    onSearch(searchValue)
+    if (searchValue.trim()) {
+      onSearch(searchValue)
+    }
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && searchValue.trim()) {
+      if (searchValue.trim()) {
+        onSearch(searchValue)
+      }
+    }
   }
 
   const handleLocation = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const { latitude, longitude } = position.coords
-      onLocation(latitude, longitude)
-    })
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser')
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords
+        onLocation(latitude, longitude)
+      },
+      (error) => {
+        alert('Error fetching location. Please enable location access.')
+        console.error('Geolocation error:', error)
+      },
+    )
   }
 
   const styles = {
     searchBar: {
       width: '100%',
-      height: '100%',
       maxWidth: '400px',
-      maxHeight: '50px',
     },
     searchIcon: {
-      maxHeight: '50px',
       border: 'none',
     },
   }
@@ -44,7 +62,8 @@ const Search = ({ onSearch, onLocation }) => {
           aria-label="Enter a city name"
           aria-describedby="button-addon2"
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)} // Corrected onChange handler
+          onChange={(e) => setSearchValue(e.target.value)}
+          onKeyDown={handleKeyPress}
         />
         <div className="d-flex gap-2">
           <button

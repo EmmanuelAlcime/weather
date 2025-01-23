@@ -1,6 +1,6 @@
 import WeatherCard from './WeatherCard'
 
-const Weather = ({ weather, bg = 'bg-light' }) => {
+const Weather = ({ weather, bg = 'bg-light', metrics = 'imperial' }) => {
   const weatherIconUrl = `http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`
 
   return (
@@ -17,7 +17,10 @@ const Weather = ({ weather, bg = 'bg-light' }) => {
             className="weather-icon"
           />
         </div>
-        <h1 className="display-1 mb-4">{Math.round(weather.main.temp)}°C</h1>
+        <h1 className="display-1 mb-4">
+          {Math.round(weather.main.temp)}
+          {metrics === 'imperial' ? '°F' : '°C'}
+        </h1>
         <p className="card-text text-capitalize text-secondary fs-5">
           {weather.weather[0].description}
         </p>

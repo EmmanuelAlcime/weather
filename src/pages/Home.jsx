@@ -5,40 +5,50 @@ import Keys from '../utils/Keys'
 import Weather from '../components/Weather'
 import NotFound from '../components/NotFound'
 import Loading from '../components/Loading'
+import Dropdown from '../components/Dropdown'
 
 const Home = () => {
   const [weather, setWeather] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [metrics, setMetrics] = useState('imperial') // Default to imperial
+  const [searchTerm, setSearchTerm] = useState('Bahamas') // Store last searched term
 
   const handleSearch = async (searchValue) => {
     setLoading(true)
-    const request = new Request(Keys())
-    const location = await request.getWeatherByCity(searchValue)
-    setWeather(location)
-    setLoading(false)
+    try {
+      const request = new Request(Keys())
+      const location = await request.getWeatherByCity(searchValue, metrics)
+      setWeather(location)
+      setSearchTerm(searchValue) // Save the searched value
+    } catch (error) {
+      console.error('Error fetching weather data:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleLocation = async (latitude, longitude) => {
     setLoading(true)
-    const request = new Request(Keys())
-    const location = await request.getWeatherByCoordinates(latitude, longitude)
-    setWeather(location)
-    setLoading(false)
-    console.log(latitude, longitude)
+    try {
+      const request = new Request(Keys())
+      const location = await request.getWeatherByCoordinates(
+        latitude,
+        longitude,
+        metrics,
+      )
+      setWeather(location)
+    } catch (error) {
+      console.error('Error fetching weather by coordinates:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
-    const fetchDefaultWeather = async () => {
-      setLoading(true)
-      const request = new Request(Keys())
-      const defaultLocation = await request.getWeatherByCity('Bahamas') // Example default city
-      console.log(defaultLocation)
-      setWeather(defaultLocation)
-      setLoading(false)
+    if (searchTerm) {
+      handleSearch(searchTerm) // Re-fetch weather data when metric changes
     }
-
-    fetchDefaultWeather()
-  }, [])
+  }, [metrics]) // Run effect when `metrics` changes
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center h-100 w-100">
@@ -46,12 +56,24 @@ const Home = () => {
         <h2 className="fw-bolder">Weather App</h2>
         <p>Search for a city to get the weather</p>
       </div>
-      <Search onSearch={handleSearch} onLocation={handleLocation} />
+      <div className="d-flex justify-content-center align-items-center gap-2">
+        <Search
+          onSearch={handleSearch}
+          onLocation={handleLocation}
+          onInputChange={setSearchTerm}
+          searchTerm={searchTerm}
+        />
+        <Dropdown
+          options={['Metric', 'Imperial']}
+          onSelect={(value) => setMetrics(value.toLowerCase())}
+          selectedOption={metrics === 'metric' ? 'Metric' : 'Imperial'}
+        />
+      </div>
       {loading ? (
         <Loading />
-      ) : weather && weather.cod === 200 ? ( // Ensure weather is not null before accessing properties
-        <Weather weather={weather} />
-      ) : weather ? ( // If weather exists but cod !== 200
+      ) : weather && weather.cod === 200 ? (
+        <Weather weather={weather} metrics={metrics} />
+      ) : weather ? (
         <NotFound message="City not found" />
       ) : null}
     </div>
